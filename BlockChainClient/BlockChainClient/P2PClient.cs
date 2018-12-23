@@ -1,12 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using WebSocketSharp;
+using Newtonsoft.Json;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Newtonsoft.Json;
-using WebSocketSharp;
 
-namespace BlockChain.StartUp
+namespace BlockChainClient
 {
     public class P2PClient
     {
@@ -19,27 +19,11 @@ namespace BlockChain.StartUp
                 WebSocket ws = new WebSocket(url);
                 ws.OnMessage += (sender, e) =>
                 {
-                    if (e.Data == "Hi Client")
-                    {
-                        Console.WriteLine(e.Data);
-                    }
-                    else
-                    {
-                        Blockchain newChain = JsonConvert.DeserializeObject<Blockchain>(e.Data);
-                        if (newChain.IsValid() && newChain.Chain.Count > Program.CryptoCoin.Chain.Count)
-                        {
-                            List<Transaction> newTransactions = new List<Transaction>();
-                            newTransactions.AddRange(newChain.PendingTransactions);
-                            newTransactions.AddRange(Program.CryptoCoin.PendingTransactions);
-
-                            newChain.PendingTransactions = newTransactions;
-                            Program.CryptoCoin = newChain;
-                        }
-                    }
+                    Console.WriteLine(e.Data);
                 };
                 ws.Connect();
                 ws.Send("Hi Server");
-                ws.Send(JsonConvert.SerializeObject(Program.CryptoCoin));
+               
                 wsDict.Add(url, ws);
             }
         }

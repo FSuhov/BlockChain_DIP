@@ -7,13 +7,14 @@ using Newtonsoft.Json;
 using WebSocketSharp;
 using WebSocketSharp.Server;
 
-namespace BlockChain.StartUp
+namespace BlockChainNode
 {
     public class P2PServer : WebSocketBehavior
     {
         bool chainSynched = false;
         WebSocketServer wss = null;
-        
+        public P2PClient Client = null;
+
         public void Start()
         {
             wss = new WebSocketServer($"ws://127.0.0.1:{Program.Port}");
@@ -29,7 +30,31 @@ namespace BlockChain.StartUp
                 Console.WriteLine(e.Data);
                 Send("Hi Client");
             }
-            else
+
+            else if (e.Data.StartsWith("T"))
+            {
+                string data = e.Data.Substring(1);
+                Transaction transaction = JsonConvert.DeserializeObject<Transaction>(data);
+                bool isAdded = Program.CryptoCoin.CreateTransaction(transaction);
+
+                if (!isAdded)
+                {
+                    Send("Invalid transaction");
+                }
+                else
+                {
+                    Send("OK transaction");
+                    Program.CryptoCoin.ProcessPendingTransactions($"ws://127.0.0.1:{Program.Port}");
+                    //Send(JsonConvert.SerializeObject(Program.CryptoCoin));
+                    //if (Client != null)
+                    //{
+                    //    Client.Broadcast(JsonConvert.SerializeObject(Program.CryptoCoin));
+                    //    Client.Send(JsonConvert.SerializeObject(Program.CryptoCoin));
+                    //}
+                }
+            }
+
+            else 
             {
                 Blockchain newChain = JsonConvert.DeserializeObject<Blockchain>(e.Data);
 

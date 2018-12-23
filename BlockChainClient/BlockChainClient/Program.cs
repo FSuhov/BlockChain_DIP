@@ -5,30 +5,23 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace BlockChain.StartUp
+namespace BlockChainClient
 {
     class Program
     {
         public static int Port = 0;
-        public static P2PServer Server = null;
+        
         public static P2PClient Client = new P2PClient();
-        public static Blockchain CryptoCoin = new Blockchain();
-        public static string name = "Unknown";
-
+        
+        public static string name = "John Smith";
+        public static string serverURL = "";
         static void Main(string[] args)
         {
-            CryptoCoin.InitializeChain();
-
             if (args.Length >= 1)
-                Port = int.Parse(args[0]);
-            if (args.Length >= 2)
-                name = args[1];
-
-            if (Port > 0)
             {
-                Server = new P2PServer();
-                Server.Start();
+                name = args[0];
             }
+
             if (name != "Unkown")
             {
                 Console.WriteLine($"Current user is {name}");
@@ -48,7 +41,7 @@ namespace BlockChain.StartUp
                 {
                     case 1:
                         Console.WriteLine("Please enter the server URL");
-                        string serverURL = Console.ReadLine();
+                        serverURL = Console.ReadLine();
                         Client.Connect($"{serverURL}/Blockchain");
                         break;
                     case 2:
@@ -56,15 +49,9 @@ namespace BlockChain.StartUp
                         string receiverName = Console.ReadLine();
                         Console.WriteLine("Please enter the amount");
                         string amount = Console.ReadLine();
-                        CryptoCoin.CreateTransaction(new Transaction(name, receiverName, int.Parse(amount)));
-                        CryptoCoin.ProcessPendingTransactions(name);
-                        Client.Broadcast(JsonConvert.SerializeObject(CryptoCoin));
+                        Transaction transaction = new Transaction(name, receiverName, int.Parse(amount));
+                        Client.Send($"{serverURL}/Blockchain", "T"+JsonConvert.SerializeObject(transaction, Formatting.Indented));
                         break;
-                    case 3:
-                        Console.WriteLine("Blockchain");
-                        Console.WriteLine(JsonConvert.SerializeObject(CryptoCoin, Formatting.Indented));
-                        break;
-
                 }
 
                 Console.WriteLine("Please select an action");
