@@ -1,0 +1,33 @@
+
+1. Start server 1
+cd D:\REPOS\BlockChain\BlockChainNode\BlockChainNode\bin\Debug
+BlockChainNode.exe 6001
+
+2. Start server 2
+cd D:\REPOS\BlockChain\BlockChainNode\BlockChainNode\bin\Debug
+BlockChainNode.exe 6002
+
+3. Connect server 2 to server 1
+ws://127.0.0.1:6001
+
+4. Connect server 1 to server 2
+ws://127.0.0.1:6002
+
+5. Start client
+cd D:\REPOS\BlockChain\BlockChainClient\BlockChainClient\bin\Debug
+BlockChainClient.exe "John Smith"
+
+6. Connect client to server 1
+ws://127.0.0.1:6001
+
+7. Make transaction
+"Lee Zend"
+2
+
+"Sarah Vega"
+11
+
+8. Check blockchain on Server 1
+9. Check blockchain on Server 2
+
+

@@ -1,8 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Newtonsoft.Json;
 using WebSocketSharp;
 using WebSocketSharp.Server;
@@ -11,9 +8,7 @@ namespace BlockChainNode
 {
     public class P2PServer : WebSocketBehavior
     {
-        bool chainSynched = false;
         WebSocketServer wss = null;
-        public P2PClient Client = null;
 
         public void Start()
         {
@@ -45,12 +40,7 @@ namespace BlockChainNode
                 {
                     Send("OK transaction");
                     Program.CryptoCoin.ProcessPendingTransactions($"ws://127.0.0.1:{Program.Port}");
-                    //Send(JsonConvert.SerializeObject(Program.CryptoCoin));
-                    //if (Client != null)
-                    //{
-                    //    Client.Broadcast(JsonConvert.SerializeObject(Program.CryptoCoin));
-                    //    Client.Send(JsonConvert.SerializeObject(Program.CryptoCoin));
-                    //}
+                    Program.Client.Broadcast(JsonConvert.SerializeObject(Program.CryptoCoin));
                 }
             }
 
@@ -66,12 +56,7 @@ namespace BlockChainNode
 
                     newChain.PendingTransactions = newTransactions;
                     Program.CryptoCoin = newChain;
-                }
-
-                if (!chainSynched)
-                {
-                    Send(JsonConvert.SerializeObject(Program.CryptoCoin));
-                    chainSynched = true;
+                    Send("Done synching");
                 }
             }
         }

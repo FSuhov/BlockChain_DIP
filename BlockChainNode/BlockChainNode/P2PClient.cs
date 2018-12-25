@@ -1,11 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using WebSocketSharp;
-using WebSocketSharp.Server;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Newtonsoft.Json;
 
 namespace BlockChainNode
 {
@@ -18,34 +13,13 @@ namespace BlockChainNode
             if (!wsDict.ContainsKey(url))
             {
                 WebSocket ws = new WebSocket(url);
-                ws.OnMessage += (sender, e) =>
-                {
-                    if (e.Data == "Hi Client")
-                    {
-                        Console.WriteLine(e.Data);
-                    }
-                    else
-                    {
-
-                        Blockchain newChain = JsonConvert.DeserializeObject<Blockchain>(e.Data);
-                        if (newChain.IsValid() && newChain.Chain.Count > Program.CryptoCoin.Chain.Count)
-                        {
-                            List<Transaction> newTransactions = new List<Transaction>();
-                            newTransactions.AddRange(newChain.PendingTransactions);
-                            newTransactions.AddRange(Program.CryptoCoin.PendingTransactions);
-
-                            newChain.PendingTransactions = newTransactions;
-                            Program.CryptoCoin = newChain;
-                        }
-                    }
-                };
+                ws.OnMessage += (sender, e) => { Console.WriteLine(e.Data); };
                 ws.Connect();
                 ws.Send("Hi Server");
-                ws.Send(JsonConvert.SerializeObject(Program.CryptoCoin));
                 wsDict.Add(url, ws);
             }
         }
-        
+
         public void Send(string url, string data)
         {
             foreach (var item in wsDict)
@@ -84,3 +58,4 @@ namespace BlockChainNode
         }
     }
 }
+

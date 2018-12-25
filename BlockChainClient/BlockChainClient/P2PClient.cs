@@ -1,10 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using WebSocketSharp;
-using Newtonsoft.Json;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace BlockChainClient
 {
@@ -17,13 +13,9 @@ namespace BlockChainClient
             if (!wsDict.ContainsKey(url))
             {
                 WebSocket ws = new WebSocket(url);
-                ws.OnMessage += (sender, e) =>
-                {
-                    Console.WriteLine(e.Data);
-                };
+                ws.OnMessage += (sender, e) => { Console.WriteLine(e.Data); };
                 ws.Connect();
                 ws.Send("Hi Server");
-               
                 wsDict.Add(url, ws);
             }
         }
