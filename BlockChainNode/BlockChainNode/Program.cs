@@ -9,10 +9,10 @@ namespace BlockChainNode
 {
     class Program
     {
-        public static int Port = 6001;
+        public static int Port = 6002;
         public static P2PServer Server = null;
         public static P2PClient Client = new P2PClient();
-        public static Blockchain CryptoCoin = null;
+        public static Blockchain CryptoCoin = Blockchain.LoadFromBackUp();
         public static string pairURL = "/Blockchain";
 
         static void Main(string[] args)
@@ -27,7 +27,10 @@ namespace BlockChainNode
 
             Console.WriteLine($"Node is running at ::{Port}");
 
-            CryptoCoin = new Blockchain(Port.ToString());
+            if (CryptoCoin == null)
+            {
+                CryptoCoin = new Blockchain(Port.ToString());
+            }
 
             Console.WriteLine("=========================");
             Console.WriteLine("1. Connect to a server");
@@ -56,6 +59,7 @@ namespace BlockChainNode
                 selection = int.Parse(action);
             }
             Client.Close();
+            CryptoCoin.WriteToXml();
         }
     }
 }

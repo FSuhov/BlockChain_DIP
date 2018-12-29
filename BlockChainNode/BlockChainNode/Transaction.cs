@@ -18,5 +18,9 @@ namespace BlockChainNode
             ToAddress = toAddress;
             Amount = amount;
         }
+
+        public Transaction()
+        {
+        }
     }
 }

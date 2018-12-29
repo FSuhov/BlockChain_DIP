@@ -1,17 +1,21 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml.Serialization;
 
 namespace BlockChainNode
 {
+    [Serializable]
     public class Blockchain
     {
-        public IList<Transaction> PendingTransactions = new List<Transaction>();
-        public IList<Block> Chain { set; get; }
+        public List<Transaction> PendingTransactions = new List<Transaction>();
+        public List<Block> Chain { set; get; }
         public int Difficulty { set; get; } = 2;
         public int Reward = 1; //1 cryptocurrency
+        private string _port;
 
         public Blockchain()
         {
@@ -19,6 +23,7 @@ namespace BlockChainNode
 
         public Blockchain(string port)
         {
+            _port = port;
             InitializeChain();
             if (port == "6001")
             {
@@ -123,6 +128,34 @@ namespace BlockChainNode
                 }
             }
             return balance;
+        }
+
+        public void WriteToXml()
+        {
+            XmlSerializer s = new XmlSerializer(typeof(Blockchain));
+            DateTime dt = DateTime.UtcNow.Date;
+            using (FileStream fs = new FileStream($"cryptocoin-{dt.ToString("dd-MM-yyyy")}-{_port}.xml", FileMode.OpenOrCreate))
+            {
+                s.Serialize(fs, this);
+            }
+        }
+
+        public static Blockchain LoadFromBackUp()
+        {
+            Blockchain blockchain = null;
+            XmlSerializer s = new XmlSerializer(typeof(Blockchain));
+            try
+            {
+                using (FileStream fs = new FileStream("back-up.xml", FileMode.Open))
+                {
+                    blockchain = (Blockchain)s.Deserialize(fs);
+                }
+            }
+            catch (FileNotFoundException)
+            {
+                return null;
+            }
+            return blockchain;
         }
 
         private void AddTestData()
