@@ -11,6 +11,7 @@ namespace BlockChainNode
         public string FromAddress { get; set; }
         public string ToAddress { get; set; }
         public int Amount { get; set; }
+        public int Change { get; set; }
 
         public Transaction(string fromAddress, string toAddress, int amount)
         {

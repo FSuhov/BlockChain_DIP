@@ -65,8 +65,8 @@ namespace BlockChainClient
             Random rnd = new Random();
             for (int i = 0; i < times; i++)
             {
-                string sender = Names[rnd.Next(24)];
-                string receiver = Names[rnd.Next(24)];
+                string sender = Names[rnd.Next(Names.Length)];
+                string receiver = Names[rnd.Next(Names.Length)];
                 int amount = rnd.Next(1, 10);
                 Transaction transaction = new Transaction(sender, receiver, amount);
                 Client.Send($"{serverURL}", "T" + JsonConvert.SerializeObject(transaction, Formatting.Indented));

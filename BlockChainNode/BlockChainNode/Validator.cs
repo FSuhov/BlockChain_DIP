@@ -33,24 +33,33 @@ namespace BlockChainNode
 
             int balance = 0;
 
-            for (int i = 0; i < blockchain.Chain.Count; i++)
+            int i = blockchain.Chain.Count - 1;
+            int j;
+            do
             {
-                for (int j = 0; j < blockchain.Chain[i].Transactions.Count; j++)
+                for (j = 0; j < blockchain.Chain[i].Transactions.Count; j++)
                 {
-                    if (blockchain.Chain[i].Transactions[j].FromAddress == transaction.FromAddress)
-                    {
-                        balance -= blockchain.Chain[i].Transactions[j].Amount;
-                    }
-
                     if (blockchain.Chain[i].Transactions[j].ToAddress == transaction.FromAddress)
                     {
                         balance += blockchain.Chain[i].Transactions[j].Amount;
                     }
-                }
-            }
 
+                    if (blockchain.Chain[i].Transactions[j].FromAddress == transaction.FromAddress)
+                    {
+                        balance += blockchain.Chain[i].Transactions[j].Change;
+                        i = 1;
+                        break;
+                    }
+                }
+
+                i--;
+
+            } while (i > 0);
+
+            transaction.Change = balance - transaction.Amount;
             timer.Stop();
             TimeElapsed += timer.ElapsedTicks;
+            
 
             return balance >= transaction.Amount;
         }
