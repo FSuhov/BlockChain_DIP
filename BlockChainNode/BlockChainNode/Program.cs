@@ -2,6 +2,7 @@
 using Newtonsoft.Json;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -9,7 +10,7 @@ namespace BlockChainNode
 {
     class Program
     {
-        public static int Port = 6002;
+        public static int Port = 6001;
         public static P2PServer Server = null;
         public static P2PClient Client = new P2PClient();
         public static Blockchain CryptoCoin = Blockchain.LoadFromBackUp();
@@ -35,11 +36,12 @@ namespace BlockChainNode
             Console.WriteLine("=========================");
             Console.WriteLine("1. Connect to a server");
             Console.WriteLine("2. Display Blockchain");
-            Console.WriteLine("3. Exit");
+            Console.WriteLine("3. Display Time elapsed");
+            Console.WriteLine("4. Exit");
             Console.WriteLine("=========================");
 
             int selection = 0;
-            while (selection != 3)
+            while (selection != 4)
             {
                 switch (selection)
                 {
@@ -51,6 +53,9 @@ namespace BlockChainNode
                         break;
                     case 2:
                         Console.WriteLine(JsonConvert.SerializeObject(CryptoCoin, Formatting.Indented));
+                        break;
+                    case 3:
+                        Console.WriteLine(Validator.TimeElapsed);
                         break;
                 }
 

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -16,6 +17,7 @@ namespace BlockChainNode
         public int Difficulty { set; get; } = 2;
         public int Reward = 1; //1 cryptocurrency
         private string _port;
+        //public long TimeElapsed = 0;
 
         public Blockchain()
         {
@@ -63,7 +65,6 @@ namespace BlockChainNode
                 PendingTransactions.Add(transaction);
                 return true;
             }
-
             return false;
         }
 
@@ -81,7 +82,6 @@ namespace BlockChainNode
             Block latestBlock = GetLatestBlock();
             block.Index = latestBlock.Index + 1;
             block.PreviousHash = latestBlock.Hash;
-            //block.Hash = block.CalculateHash();
             block.Mine(this.Difficulty);
             Chain.Add(block);
         }
@@ -160,9 +160,10 @@ namespace BlockChainNode
 
         private void AddTestData()
         {
-            CreateTransaction(new Transaction("CryptoChain", "John Smith", 50));
-            CreateTransaction(new Transaction("CryptoChain", "Sarah Vega", 50));
-            CreateTransaction(new Transaction("CryptoChain", "Lee Zend", 50));
+            foreach (Account item in Validator.Accounts)
+            {
+                CreateTransaction(new Transaction("CryptoChain", item.UserName, 100));
+            }
             ProcessPendingTransactions("miner");
         }
     }
