@@ -29,16 +29,23 @@ namespace BlockChainNode
         {
         }
 
+        // Computes the hash of THIS block based on existing data
+        // Returns string representation of hash
         public string CalculateHash()
         {
             SHA256 sha256 = SHA256.Create();
 
-            byte[] inputBytes = Encoding.ASCII.GetBytes($"{TimeStamp}-{PreviousHash ?? ""}-{JsonConvert.SerializeObject(Transactions)}-{Nonce}");
+            byte[] inputBytes = Encoding.ASCII.GetBytes
+                ($"{TimeStamp}-{PreviousHash ?? ""}-{JsonConvert.SerializeObject(Transactions)}-{Nonce}");
+
             byte[] outputBytes = sha256.ComputeHash(inputBytes);
 
             return Convert.ToBase64String(outputBytes);
         }
 
+        // Calls CalculateHash method while incrementing Nonce
+        // while does not match provided difficulty criteria
+        // Stops when valid hash calculated and recorder to THIS Hash property
         public void Mine(int difficulty)
         {
             var leadingZeros = new string('0', difficulty);
